@@ -15,6 +15,9 @@ async function setup() {
 
   // Extract the tarball onto the runner
   const pathToCLI = await tc.extractTar(pathToTarball);
+
+  console.log(pathToCLI)
+  
   // Expose the tool by adding it to the PATH
   core.addPath(pathToCLI)
 }
