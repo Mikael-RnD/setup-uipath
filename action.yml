@@ -1,13 +1,14 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'Setup UiPath CLI'
+description: 'Download UiPath CLI and setup on GitHub Actions runner'
 inputs:
+  version:
+    description: 'Version of UiPath CLI to download'
+    required: true
+    default: '1.0.7985.19721'
   milliseconds:  # id of input
     description: 'number of milliseconds to wait'
     required: true
     default: '1000'
-outputs:
-  time: # output will be available to future steps
-    description: 'The current time after waiting'
 runs:
   using: 'node16'
   main: 'dist/index.js'

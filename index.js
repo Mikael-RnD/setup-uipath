@@ -1,21 +1,22 @@
 const core = require('@actions/core');
-const wait = require('./wait');
+const tc = require('@actions/tool-cache');
 
-
-// most @actions toolkit packages have async methods
-async function run() {
-  try {
-    const ms = core.getInput('milliseconds');
-    core.info(`Waiting ${ms} milliseconds ...`);
-
-    core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    await wait(parseInt(ms));
-    core.info((new Date()).toTimeString());
-
-    core.setOutput('time', new Date().toTimeString());
-  } catch (error) {
-    core.setFailed(error.message);
-  }
+async function getDownloadURL(version)
+{
+  return "https://www.myget.org/F/uipath-dev/api/v2/package/UiPath.CLI/" + version
 }
 
-run();
+async function setup() {
+  // Get version of tool to be installed
+  const version = core.getInput('version');
+
+  // Download the specific version of the tool, e.g. as a tarball
+  const pathToTarball = await tc.downloadTool(getDownloadURL(version));
+
+  // Extract the tarball onto the runner
+  const pathToCLI = await tc.extractTar(pathToTarball);
+  // Expose the tool by adding it to the PATH
+  core.addPath(pathToCLI)
+}
+
+module.exports = setup
