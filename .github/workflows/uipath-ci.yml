@@ -1,0 +1,80 @@
+# Basic workflow for utilizing GitHub Actions for CI on UiPath projects
+
+name: UiPath CI/CD
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  # UiPath account stored as a Secret in Github
+  UIPATH_ACCOUNT: ${{ secrets.UIPATH_ACCOUNT }}
+  # Password for the UiPath account stored as a Secret
+  UIPATH_PASSWORD: ${{ secrets.UIPATH_PASSWORD }}
+  # URL to the Orchestrator instance
+  ORCHESTRATOR_URL: "https://cloud.uipath.com/hppcntv/"
+  # Orchestrator tenant to deploy the project to
+  ORCHESTRATOR_TENANT: "Shared"
+  # Folder in UiPath Orchestrator, for Modern Folder use
+  ORCHESTRATOR_FOLDER: "TestFolder"
+
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-2019
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: ./
+      # The UiPath CLI is installed on Runner
+      # - uses: Mikael-RnD/UiPath-Setup@main
+      
+      # Run workflow analysis on and pack UiPath projects
+      - uses: Mikael-RnD/UiPath-Pack-Analyze@main
+        with:
+          orchestratorUrl: ${{ env.ORCHESTRATOR_URL }}
+          orchestratorTenant: ${{ env.ORCHESTRATOR_TENANT }}
+          orchestratorFolder: ${{ env.ORCHESTRATOR_FOLDER }}
+          orchestratorUsername: ${{ env.UIPATH_ACCOUNT }}
+          orchestratorPassword: ${{ env.UIPATH_PASSWORD }}
+          
+      # Upload packages as build artifacts to be handled by deploy job
+      - uses: actions/upload-artifact@v2
+        with:
+          path: ${{ github.workspace }}/output
+          if-no-files-found: error
+          retention-days: 90
+      
+  deploy:
+    needs: build
+    runs-on: windows-2019
+    steps:
+      # Download .nupkg packages created in build job to GitHub workspace
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v2.1.0
+        with:
+          # Artifact name
+          name: artifact # optional
+          # Destination path
+          path: ${{github.workspace}} # optional
+      
+      # The UiPath CLI is installed on Runner
+      - uses: Mikael-RnD/UiPath-Setup@main
+      
+      # .nupkg packages are deployed to UiPath Orchestrator
+      - name: UiPath Deploy
+        uses: Mikael-RnD/UiPath-Deploy@main
+        with:
+          orchestratorUrl: ${{ env.ORCHESTRATOR_URL }}
+          orchestratorTenant: ${{ env.ORCHESTRATOR_TENANT }}
+          orchestratorFolder: ${{ env.ORCHESTRATOR_FOLDER }}
+          orchestratorUsername: ${{ env.UIPATH_ACCOUNT }}
+          orchestratorPassword: ${{ env.UIPATH_PASSWORD }}
