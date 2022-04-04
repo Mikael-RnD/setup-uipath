@@ -1,5 +1,5 @@
 {
-  "name": "javascript-action",
+  "name": "setup-uipath",
   "version": "1.0.0",
   "description": "JavaScript Action Template",
   "main": "index.js",
@@ -18,7 +18,7 @@
     "Actions",
     "JavaScript"
   ],
-  "author": "",
+  "author": "Mikael Andersson",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/actions/javascript-action/issues"
@@ -26,7 +26,8 @@
   "homepage": "https://github.com/actions/javascript-action#readme",
   "dependencies": {
     "@actions/core": "^1.6.0",
-    "@actions/github": "^5.0.0"
+    "@actions/github": "^5.0.1",
+    "@actions/tool-cache": "^1.7.2"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.31.1",
