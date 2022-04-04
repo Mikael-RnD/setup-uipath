@@ -32,7 +32,7 @@ jobs:
     runs-on: windows-2019
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./
       - run: uipcli --version
       # The UiPath CLI is installed on Runner
@@ -60,7 +60,7 @@ jobs:
     steps:
       # Download .nupkg packages created in build job to GitHub workspace
       - name: Download a Build Artifact
-        uses: actions/download-artifact@v2.1.0
+        uses: actions/download-artifact@v3
         with:
           # Artifact name
           name: artifact # optional
