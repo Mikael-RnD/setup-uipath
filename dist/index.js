@@ -4,10 +4,10 @@
 /***/ 690:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-const path = __nccwpck_require__(17);
+//const path = require('path');
 const core = __nccwpck_require__(722);
 const tc = __nccwpck_require__(826);
-const { getDownloadObject } = __nccwpck_require__(350);
+// const { getDownloadObject } = require('./lib/utils');
 
 async function getDownloadURL(version)
 {
@@ -26,14 +26,14 @@ async function setup() {
     console.log(pathToTarball);
 
     // Extract the tarball/zipball onto host runner
-    const extract = download.url.endsWith('.zip') ? tc.extractZip : tc.extractTar;
+    const extract = await tc.downloadTool(getDownloadURL(version))
     const pathToCLI = await extract(pathToTarball);
     
     // Logging!
     console.log(pathToCLI);
 
     // Expose the tool by adding it to the PATH
-    core.addPath(path.join(pathToCLI,download.binPath));
+    core.addPath(pathToCLI);
 
 
   } catch (error) {
@@ -5450,14 +5450,6 @@ function v4(options, buf, offset) {
 }
 
 module.exports = v4;
-
-
-/***/ }),
-
-/***/ 350:
-/***/ ((module) => {
-
-module.exports = eval("require")("./lib/utils");
 
 
 /***/ }),
