@@ -11,7 +11,9 @@ const tc = __nccwpck_require__(826);
 
 async function getDownloadURL(version)
 {
-  return "https://www.myget.org/F/uipath-dev/api/v2/package/UiPath.CLI/" + version
+  const downloadURL = "https://www.myget.org/F/uipath-dev/api/v2/package/UiPath.CLI/" + version
+  console.log("Download URL: " + downloadURL);
+  return downloadURL
 }
 
 async function setup() {
