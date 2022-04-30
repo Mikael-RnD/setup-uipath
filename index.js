@@ -21,18 +21,16 @@ async function setup() {
     // Download the specific version of the tool
     const downloadPath = await tc.downloadTool(getDownloadURL(version));
     const filename = path.basename(downloadPath);
-    //console.log('Directories: ' + path.dirname());
     console.log('Filename: ' + filename);
+
     console.log('Download Path: ' + downloadPath);
     const extractPath = await tc.extractZip(downloadPath);
     console.log('Tool extracted. ');
+
     const pathToCLI = path.join(extractPath,'lib','net461'); 
-
     console.log('Adding ' + pathToCLI + ' to PATH');
-
     // Expose the tool by adding it to the PATH
     core.addPath(pathToCLI);
-
 
   } catch (error) {
     core.setFailed(error.Message);
