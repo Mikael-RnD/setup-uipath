@@ -8,6 +8,7 @@
 const core = __nccwpck_require__(722);
 const tc = __nccwpck_require__(826);
 const path = __nccwpck_require__(17)
+const fs = __nccwpck_require__(147)
 // const { getDownloadObject } = require('./lib/utils');
 
 function getDownloadURL(version)
@@ -29,7 +30,9 @@ async function setup() {
     //console.log('Directories: ' + path.dirname());
     console.log('Filename: ' + filename);
     console.log('Download Path: ' + downloadPath);
-    const pathToCLI = await tc.extractZip(downloadPath);
+    const extractPath = await tc.extractZip(downloadPath);
+    console.log('Tool extracted. ');
+    const pathToCLI = path.join(extractPath,'lib','net461'); 
 
     //console.log('Directories: ' + pathToCLI.dirname())
     // Extract the tarball/zipball onto host runner

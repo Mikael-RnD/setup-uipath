@@ -2,6 +2,7 @@
 const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
 const path = require('path')
+const fs = require('fs')
 // const { getDownloadObject } = require('./lib/utils');
 
 function getDownloadURL(version)
@@ -23,7 +24,9 @@ async function setup() {
     //console.log('Directories: ' + path.dirname());
     console.log('Filename: ' + filename);
     console.log('Download Path: ' + downloadPath);
-    const pathToCLI = await tc.extractZip(downloadPath);
+    const extractPath = await tc.extractZip(downloadPath);
+    console.log('Tool extracted. ');
+    const pathToCLI = path.join(extractPath,'lib','net461'); 
 
     //console.log('Directories: ' + pathToCLI.dirname())
     // Extract the tarball/zipball onto host runner
