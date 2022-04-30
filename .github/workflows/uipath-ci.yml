@@ -1,5 +1,4 @@
 # Basic workflow for utilizing GitHub Actions for CI on UiPath projects
-
 name: UiPath CI/CD
 
 # Controls when the workflow will run
