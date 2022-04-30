@@ -19,10 +19,11 @@ async function setup() {
     // Download the specific version of the tool, e.g. as a tarball
     const pathToTarball = await tc.downloadTool(getDownloadURL(version));
     console.log(pathToTarball);
+    const pathToCLI = await tc.extractZip(pathToTarball);
 
     // Extract the tarball/zipball onto host runner
-    const extract = await tc.downloadTool(getDownloadURL(version))
-    const pathToCLI = await extract(pathToTarball);
+    //const extract = await tc.downloadTool(getDownloadURL(version))
+    //const pathToCLI = await extract(pathToTarball);
     
     // Logging!
     console.log(pathToCLI);
