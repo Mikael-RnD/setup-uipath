@@ -25,7 +25,7 @@ async function setup() {
     console.log('Download Path: ' + downloadPath);
     const pathToCLI = await tc.extractZip(downloadPath);
 
-    console.log('Directories: ' + pathToCLI.dirname())
+    //console.log('Directories: ' + pathToCLI.dirname())
     // Extract the tarball/zipball onto host runner
     //const extract = await tc.downloadTool(getDownloadURL(version))
     //const pathToCLI = await extract(pathToTarball);
