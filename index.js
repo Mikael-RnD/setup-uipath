@@ -1,6 +1,8 @@
 //const path = require('path');
 const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
+const path = require('path')
+const fs = require('fs')
 // const { getDownloadObject } = require('./lib/utils');
 
 function getDownloadURL(version)
@@ -16,20 +18,19 @@ async function setup() {
     const version = core.getInput('version');
     console.log(version);
 
-    // Download the specific version of the tool, e.g. as a tarball
-    const pathToTarball = await tc.downloadTool(getDownloadURL(version));
-    console.log(pathToTarball);
+    // Download the specific version of the tool
+    const downloadPath = await tc.downloadTool(getDownloadURL(version));
+    const filename = path.basename(downloadPath);
+    console.log('Filename: ' + filename);
 
-    // Extract the tarball/zipball onto host runner
-    const extract = await tc.downloadTool(getDownloadURL(version))
-    const pathToCLI = await extract(pathToTarball);
-    
-    // Logging!
-    console.log(pathToCLI);
+    console.log('Download Path: ' + downloadPath);
+    const extractPath = await tc.extractZip(downloadPath);
+    console.log('Tool extracted. ');
 
+    const pathToCLI = path.join(extractPath,'lib','net461'); 
+    console.log('Adding ' + pathToCLI + ' to PATH');
     // Expose the tool by adding it to the PATH
     core.addPath(pathToCLI);
-
 
   } catch (error) {
     core.setFailed(error.Message);
