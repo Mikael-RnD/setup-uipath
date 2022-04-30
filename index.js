@@ -3,11 +3,11 @@ const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
 // const { getDownloadObject } = require('./lib/utils');
 
-async function getDownloadURL(version)
+function getDownloadURL(version)
 {
-  const downloadURL = "https://www.myget.org/F/uipath-dev/api/v2/package/UiPath.CLI/" + version
+  const downloadURL = encodeURI('https://www.myget.org/F/uipath-dev/api/v2/package/UiPath.CLI/' + version);
   console.log("Download URL: " + downloadURL);
-  return downloadURL
+  return downloadURL;
 }
 
 async function setup() {
@@ -15,7 +15,6 @@ async function setup() {
     // Get version of tool to be installed
     const version = core.getInput('version');
     console.log(version);
-
 
     // Download the specific version of the tool, e.g. as a tarball
     const pathToTarball = await tc.downloadTool(getDownloadURL(version));
