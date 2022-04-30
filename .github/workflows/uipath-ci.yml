@@ -32,11 +32,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      - uses: ./
-      - run: uipcli --version
-      # The UiPath CLI is installed on Runner
-      # - uses: Mikael-RnD/UiPath-Setup@main
-      
+      - name: UiPath-Setup-JS
+        uses: ./
       # Run workflow analysis on and pack UiPath projects
       - uses: Mikael-RnD/UiPath-Pack-Analyze@main
         with:
