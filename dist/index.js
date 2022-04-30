@@ -7,6 +7,7 @@
 //const path = require('path');
 const core = __nccwpck_require__(722);
 const tc = __nccwpck_require__(826);
+const path = __nccwpck_require__(17)
 // const { getDownloadObject } = require('./lib/utils');
 
 function getDownloadURL(version)
@@ -24,6 +25,8 @@ async function setup() {
 
     // Download the specific version of the tool, e.g. as a tarball
     const downloadPath = await tc.downloadTool(getDownloadURL(version));
+    const filename = path.basename(downloadPath);
+    console.log('Filename: ' + filename);
     console.log('Download Path: ' + downloadPath);
     const pathToCLI = await tc.extractZip(downloadPath);
 
