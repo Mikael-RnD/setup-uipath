@@ -33,7 +33,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       - uses: ./
-      - run: lib\net461 uipcli --version
+      - run: 
+          | 
+            cd "lib\net461" 
+            uipcli --version
       # The UiPath CLI is installed on Runner
       # - uses: Mikael-RnD/UiPath-Setup@main
       
