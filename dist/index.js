@@ -8,8 +8,6 @@
 const core = __nccwpck_require__(722);
 const tc = __nccwpck_require__(826);
 const path = __nccwpck_require__(17)
-const fs = __nccwpck_require__(147)
-// const { getDownloadObject } = require('./lib/utils');
 
 function getDownloadURL(version)
 {

@@ -2,8 +2,6 @@
 const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
 const path = require('path')
-const fs = require('fs')
-// const { getDownloadObject } = require('./lib/utils');
 
 function getDownloadURL(version)
 {
