@@ -8,7 +8,7 @@ inputs:
   milliseconds:  # id of input
     description: 'number of milliseconds to wait'
     required: true
-    default: '1000'
+    default: '10000'
 runs:
   using: 'node16'
   main: 'dist/index.js'
