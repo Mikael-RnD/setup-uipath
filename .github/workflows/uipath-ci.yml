@@ -34,7 +34,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       - uses: ./
-      - run: lib\net461 uipcli --version
+      - run: uipcli --version
       # The UiPath CLI is installed on Runner
       # - uses: Mikael-RnD/UiPath-Setup@main
       
@@ -46,13 +46,6 @@ jobs:
           orchestratorFolder: ${{ env.ORCHESTRATOR_FOLDER }}
           orchestratorUsername: ${{ env.UIPATH_ACCOUNT }}
           orchestratorPassword: ${{ env.UIPATH_PASSWORD }}
-          
-      # Upload packages as build artifacts to be handled by deploy job
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/output
-          if-no-files-found: error
-          retention-days: 90
       
   deploy:
     needs: build
