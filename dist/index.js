@@ -24,7 +24,7 @@ async function setup() {
     const version = core.getInput('version');
     console.log(version);
 
-    // Download the specific version of the tool, e.g. as a tarball
+    // Download the specific version of the tool
     const downloadPath = await tc.downloadTool(getDownloadURL(version));
     const filename = path.basename(downloadPath);
     //console.log('Directories: ' + path.dirname());
@@ -34,12 +34,6 @@ async function setup() {
     console.log('Tool extracted. ');
     const pathToCLI = path.join(extractPath,'lib','net461'); 
 
-    //console.log('Directories: ' + pathToCLI.dirname())
-    // Extract the tarball/zipball onto host runner
-    //const extract = await tc.downloadTool(getDownloadURL(version))
-    //const pathToCLI = await extract(pathToTarball);
-    
-    // Logging!
     console.log('Adding ' + pathToCLI + ' to PATH');
 
     // Expose the tool by adding it to the PATH
