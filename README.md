@@ -5,10 +5,13 @@ A GitHub Action for setting up the UiPath CLI tool available from this link: htt
   <a href="https://github.com/actions/javascript-action/actions"><img alt="javscript-action status" src="https://github.com/actions/javascript-action/workflows/units-test/badge.svg"></a>
 </p>
 
-## action.yml
+## How to use
+Example usage:
 
-## Package for distribution
+      # Set up the UiPath CLI (uipcli) and add it to PATH on your runner
+      - name: UiPath Pack
+        uses: Mikael-RnD/setup-uipath@main
+        with:
+          version: # Version number, defaults to 1.0.7985.19721 which was the latest version available at 2021-05-01
 
-GitHub Actions will run the entry point from the action.yml. Packaging assembles the code into one file that can be checked in to Git, enabling fast and reliable execution and preventing the need to check in node_modules.
-
-Actions are run from GitHub repos.  Packaging the action will create a packaged action in the dist folder.
+For further steps in your workflow you can now use uipcli commands.
