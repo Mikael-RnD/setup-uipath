@@ -3,10 +3,6 @@ A GitHub Action for setting up the UiPath CLI tool available from this link: htt
 
 **Note: This action is only compatible with Windows runners**
 
-<p align="center">
-  <a href="https://github.com/actions/javascript-action/actions"><img alt="javscript-action status" src="https://github.com/actions/javascript-action/workflows/units-test/badge.svg"></a>
-</p>
-
 ## How to use
 Example usage:
 
