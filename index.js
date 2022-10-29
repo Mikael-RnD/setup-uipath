@@ -5,7 +5,8 @@ const path = require('path')
 
 function getDownloadURL(version)
 {
-  const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/UiPath.CLI.Windows/versions/22.10.8335.19969/content');
+  //const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/UiPath.CLI.Windows/versions/22.10.8335.19969/content');
+  const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/UiPath.CLI/versions/22.4.8242.13090/content');
   console.log("Download URL: " + downloadURL);
   return downloadURL;
 }
