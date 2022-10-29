@@ -6,9 +6,19 @@ const path = require('path')
 function getDownloadURL(version)
 {
   //const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/UiPath.CLI.Windows/versions/22.10.8335.19969/content');
-  const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/UiPath.CLI/versions/21.10.8318.31915/content');
+  const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/UiPath.CLI/versions/'+version+'/content');
   console.log("Download URL: " + downloadURL);
   return downloadURL;
+}
+
+function getCliPath(version,extractPath){
+  const firstVersionPart = version.split(".")[0];
+
+  if(firstVersionPart > '21'){
+    return path.combine(extractPath,'tools');
+  } else {
+    return path.combine(extractPath,'lib','net461');
+  }
 }
 
 async function setup() {
@@ -26,7 +36,7 @@ async function setup() {
     const extractPath = await tc.extractZip(downloadPath);
     console.log('Tool extracted. ');
 
-    const pathToCLI = path.join(extractPath,'tools'); 
+    const pathToCLI = getCliPath(version,extractPath); 
     console.log('Adding ' + pathToCLI + ' to PATH');
     // Expose the tool by adding it to the PATH
     core.addPath(pathToCLI);
