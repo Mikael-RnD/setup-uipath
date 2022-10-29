@@ -5,7 +5,7 @@ const path = require('path')
 
 function getDownloadURL(version)
 {
-  const downloadURL = encodeURI('https://uipath.visualstudio.com/Public.Feeds/_artifacts/feed/UiPath-Official/NuGet/UiPath.CLI.Windows/overview/22.10.8335.19969');
+  const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/UiPath.CLI.Windows/versions/22.10.8335.19969/content');
   console.log("Download URL: " + downloadURL);
   return downloadURL;
 }
