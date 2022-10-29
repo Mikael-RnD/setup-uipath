@@ -5,7 +5,7 @@ const path = require('path')
 
 function getDownloadURL(version)
 {
-  const downloadURL = encodeURI('https://www.myget.org/F/uipath-dev/api/v2/package/UiPath.CLI/' + version);
+  const downloadURL = encodeURI('https://uipath.visualstudio.com/Public.Feeds/_artifacts/feed/UiPath-Official/NuGet/UiPath.CLI.Windows/overview/22.10.8335.19969');
   console.log("Download URL: " + downloadURL);
   return downloadURL;
 }
@@ -25,7 +25,7 @@ async function setup() {
     const extractPath = await tc.extractZip(downloadPath);
     console.log('Tool extracted. ');
 
-    const pathToCLI = path.join(extractPath,'lib','net461'); 
+    const pathToCLI = path.join(extractPath,'tools'); 
     console.log('Adding ' + pathToCLI + ' to PATH');
     // Expose the tool by adding it to the PATH
     core.addPath(pathToCLI);
