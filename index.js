@@ -12,9 +12,10 @@ function getDownloadURL(version)
 }
 
 function getCliPath(version,extractPath){
-  const firstVersionPart = version.split(".")[0];
+  console.log('Version ' + version)
+  const versionParts = version.split(".");
 
-  if(firstVersionPart > '21'){
+  if(versionParts[0] > '21'){
     return path.combine(extractPath,'tools');
   } else {
     return path.combine(extractPath,'lib','net461');
