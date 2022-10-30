@@ -12,9 +12,9 @@ function getDownloadURL(version)
 }
 
 function getCliPath(version,extractPath){
-  console.log('Version ' + version)
-  const versionParts = version.split(".");
-
+  console.log('Version ' + version);
+  const versionParts = version.split('.');
+  console.log(versionParts);
   if(versionParts[0] > '21'){
     return path.combine(extractPath,'tools');
   } else {
@@ -27,7 +27,6 @@ async function setup() {
     // Get version of tool to be installed
     const version = core.getInput('version');
     console.log(version);
-
     // Download the specific version of the tool
     const downloadPath = await tc.downloadTool(getDownloadURL(version));
     const filename = path.basename(downloadPath);
@@ -35,7 +34,7 @@ async function setup() {
 
     console.log('Download Path: ' + downloadPath);
     const extractPath = await tc.extractZip(downloadPath);
-    console.log('Tool extracted. ');
+    console.log('Tool extracted to ' + extractPath);
 
     const pathToCLI = getCliPath(version,extractPath); 
     console.log('Adding ' + pathToCLI + ' to PATH');
