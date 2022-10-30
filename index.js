@@ -5,7 +5,6 @@ const path = require('path')
 
 function getDownloadURL(version)
 {
-  //const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/UiPath.CLI.Windows/versions/22.10.8335.19969/content');
   const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/UiPath.CLI/versions/'+version+'/content');
   console.log("Download URL: " + downloadURL);
   return downloadURL;
@@ -15,10 +14,15 @@ function getCliPath(version,extractPath){
   console.log('Version ' + version);
   const versionParts = version.split('.');
   console.log(versionParts);
+  var fullPathToCli;
   if(versionParts[0] > '21'){
-    return path.combine(extractPath,'tools');
+    fullPathToCli = path.combine(extractPath,'tools');
+    console.log('uipcli path: ' + fullPathToCli);
+    return fullPathToCli;
   } else {
-    return path.combine(extractPath,'lib','net461');
+    fullPathToCli = path.combine(extractPath,'lib','net461');
+    console.log('uipcli path: ' + fullPathToCli);
+    return fullPathToCli;
   }
 }
 
@@ -27,6 +31,7 @@ async function setup() {
     // Get version of tool to be installed
     const version = core.getInput('version');
     console.log(version);
+
     // Download the specific version of the tool
     const downloadPath = await tc.downloadTool(getDownloadURL(version));
     const filename = path.basename(downloadPath);
