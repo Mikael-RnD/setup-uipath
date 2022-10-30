@@ -15,7 +15,7 @@ function getCliPath(version,extractPath){
   const versionParts = version.split('.');
   console.log(versionParts[0]);
   var fullPathToCli;
-  if(versionParts[0] > 21){
+  if(parseInt(versionParts[0]) > 21){
     fullPathToCli = path.combine(extractPath,'tools');
     console.log('uipcli path: ' + fullPathToCli);
     return fullPathToCli;
