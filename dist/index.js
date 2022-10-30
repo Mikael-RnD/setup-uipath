@@ -34,6 +34,7 @@ function getCliPath(version,extractPath){
 
 async function setup() {
   try {
+    
     // Get version of tool to be installed
     const version = core.getInput('version');
     console.log(version);
