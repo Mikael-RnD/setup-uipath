@@ -19,7 +19,7 @@ function getDownloadURL(version)
 function getCliPath(version,extractPath){
   console.log('Version ' + version);
   const versionParts = version.split('.');
-  console.log(versionParts);
+  console.log(versionParts[0]);
   var fullPathToCli;
   if(versionParts[0] > 21){
     fullPathToCli = path.combine(extractPath,'tools');
