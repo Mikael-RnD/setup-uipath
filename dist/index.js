@@ -7,7 +7,7 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 //const path = require('path');
 const core = __nccwpck_require__(2186);
 const tc = __nccwpck_require__(7784);
-const path = __nccwpck_require__(1017)
+const path = __nccwpck_require__(1017);
 
 function getDownloadURL(version)
 {
