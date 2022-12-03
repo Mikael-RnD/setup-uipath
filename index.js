@@ -36,10 +36,10 @@ function getCliPath(version,extractPath){
   var fullPathToCli;
   if(parseInt(majorVersion) > 21){
     console.log('Adding tools to path');
-    fullPathToCli = path.combine(extractPath,'tools');
+    fullPathToCli = path.join(extractPath,'tools');
   } else {
     console.log('Adding lib and net461 to tools');
-    fullPathToCli = path.combine(extractPath,'lib','net461');
+    fullPathToCli = path.join(extractPath,'lib','net461');
   }
   console.log('uipcli path: ' + fullPathToCli);
   return fullPathToCli;
