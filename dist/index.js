@@ -9,8 +9,6 @@ const core = __nccwpck_require__(2186);
 const tc = __nccwpck_require__(7784);
 const path = __nccwpck_require__(1017)
 
-
-
 function getDownloadURL(version)
 {
   var downloadURL; 
@@ -24,7 +22,7 @@ function getDownloadURL(version)
     downloadURL = encodeURI('https://www.myget.org/F/uipath-dev/api/v2/package/UiPath.CLI/' + version);
     
   }
-  console.log('uipcli path: ' + downloadURL);
+  console.log('Download url: ' + downloadURL);
   return downloadURL;
 }
 
@@ -36,11 +34,10 @@ function getCliPath(version,extractPath){
   var fullPathToCli;
   if(parseInt(versionParts[0]) > 21){
     fullPathToCli = path.combine(extractPath,'tools');
-    console.log('uipcli path: ' + fullPathToCli);
   } else {
     fullPathToCli = path.combine(extractPath,'lib','net461');
-    console.log('uipcli path: ' + fullPathToCli);
   }
+  console.log('uipcli path: ' + fullPathToCli);
   return fullPathToCli;
 }
 
@@ -57,7 +54,7 @@ async function setup() {
 
     console.log('Download Path: ' + downloadPath);
     const extractPath = await tc.extractZip(downloadPath);
-    console.log('Tool extracted. ');
+    console.log('Tool extracted to ' + extractPath);
 
     const pathToCLI = getCliPath(version,extractPath);
     console.log('Adding ' + pathToCLI + ' to PATH');
