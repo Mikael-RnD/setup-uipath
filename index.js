@@ -24,19 +24,18 @@ function getDownloadURL(version)
 
 
 function getCliPath(version,extractPath){
-  console.log('Version ' + version);
+  console.log('getCliPath: Version ' + version + ' extractPath: ' + extractPath);
   const versionParts = version.split('.');
   console.log(versionParts[0]);
   var fullPathToCli;
   if(parseInt(versionParts[0]) > 21){
     fullPathToCli = path.combine(extractPath,'tools');
     console.log('uipcli path: ' + fullPathToCli);
-    return fullPathToCli;
   } else {
     fullPathToCli = path.combine(extractPath,'lib','net461');
     console.log('uipcli path: ' + fullPathToCli);
-    return fullPathToCli;
   }
+  return fullPathToCli;
 }
 
 async function setup() {
