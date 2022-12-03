@@ -3,11 +3,41 @@ const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
 const path = require('path')
 
+
+
 function getDownloadURL(version)
 {
-  const downloadURL = encodeURI('https://www.myget.org/F/uipath-dev/api/v2/package/UiPath.CLI/' + version);
+  var downloadURL; 
   console.log("Download URL: " + downloadURL);
+
+  const versionParts = version.split('.');
+  console.log(versionParts[0]);
+  if(parseInt(versionParts[0]) > 21){
+    downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/UiPath.CLI/versions/'+version+'/content');
+
+  } else {
+    downloadURL = encodeURI('https://www.myget.org/F/uipath-dev/api/v2/package/UiPath.CLI/' + version);
+    
+  }
+  console.log('uipcli path: ' + downloadURL);
   return downloadURL;
+}
+
+
+function getCliPath(version,extractPath){
+  console.log('Version ' + version);
+  const versionParts = version.split('.');
+  console.log(versionParts[0]);
+  var fullPathToCli;
+  if(parseInt(versionParts[0]) > 21){
+    fullPathToCli = path.combine(extractPath,'tools');
+    console.log('uipcli path: ' + fullPathToCli);
+    return fullPathToCli;
+  } else {
+    fullPathToCli = path.combine(extractPath,'lib','net461');
+    console.log('uipcli path: ' + fullPathToCli);
+    return fullPathToCli;
+  }
 }
 
 async function setup() {
@@ -25,7 +55,7 @@ async function setup() {
     const extractPath = await tc.extractZip(downloadPath);
     console.log('Tool extracted. ');
 
-    const pathToCLI = path.join(extractPath,'lib','net461'); 
+    const pathToCLI = getCliPath(version,extractPath);
     console.log('Adding ' + pathToCLI + ' to PATH');
     // Expose the tool by adding it to the PATH
     core.addPath(pathToCLI);
