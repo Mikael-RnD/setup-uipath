@@ -8,7 +8,6 @@ const path = require('path')
 function getDownloadURL(version)
 {
   var downloadURL; 
-  console.log("Download URL: " + downloadURL);
 
   const versionParts = version.split('.');
   console.log(versionParts[0]);

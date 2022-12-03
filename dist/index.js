@@ -14,7 +14,6 @@ const path = __nccwpck_require__(1017)
 function getDownloadURL(version)
 {
   var downloadURL; 
-  console.log("Download URL: " + downloadURL);
 
   const versionParts = version.split('.');
   console.log(versionParts[0]);

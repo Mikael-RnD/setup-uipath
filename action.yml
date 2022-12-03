@@ -4,7 +4,7 @@ inputs:
   version:
     description: 'Version of UiPath CLI to download'
     required: true
-    default: '1.0.7985.19721'
+    default: '22.4.8242.13090'
   milliseconds:  # id of input
     description: 'number of milliseconds to wait'
     required: true
