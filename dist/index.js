@@ -8,14 +8,19 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 const core = __nccwpck_require__(2186);
 const tc = __nccwpck_require__(7784);
 const path = __nccwpck_require__(1017);
+const fs = __nccwpck_require__(7147);
+
+function getMajorVersionPart(version){
+  var versionParts = version.split('.');
+  return versionParts[0];
+}
 
 function getDownloadURL(version)
 {
   var downloadURL; 
 
-  const versionParts = version.split('.');
-  console.log(versionParts[0]);
-  if(parseInt(versionParts[0]) > 21){
+  var majorVersion = getMajorVersionPart(version);
+  if(parseInt(majorVersion) > 21){
     downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/UiPath.CLI/versions/'+version+'/content');
 
   } else {
@@ -29,10 +34,13 @@ function getDownloadURL(version)
 
 function getCliPath(version,extractPath){
   console.log('getCliPath: Version ' + version + ' extractPath: ' + extractPath);
-  const versionParts = version.split('.');
-  console.log(versionParts[0]);
+  const files = fs.readdirSync(extractPath);
+  files.forEach(file => {
+    console.log(file)
+  })
+  var majorVersion = getMajorVersionPart(version);
   var fullPathToCli;
-  if(parseInt(versionParts[0]) > 21){
+  if(parseInt(majorVersion) > 21){
     console.log('Adding tools to path');
     fullPathToCli = path.combine(extractPath,'tools');
   } else {
