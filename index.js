@@ -26,7 +26,7 @@ function getTool(){
 function getCliPath(extractPath){
   var fullPathToCli;
   console.log('extractPath: ' + extractPath);
-  fullPathToCli = path.combine(extractPath,'tools');
+  fullPathToCli = path.join(extractPath,'tools');
   console.log('uipcli path: ' + fullPathToCli);
   return fullPathToCli;
 }
