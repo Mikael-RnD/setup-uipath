@@ -5,16 +5,30 @@ on:
     branches: main
 
 jobs:
-  tag_and_release:
+
+  # Set a version tag on the repo, also used for naming the machine image to use. 
+  tag:
     runs-on: ubuntu-latest
-    steps:
-      - id: tag
-        uses: hennejg/github-tag-action@v4.3.1
-        with: 
+    outputs:
+      new_version: ${{ steps.bump_tag.outputs.new_version }}
+      new_tag: ${{ steps.bump_tag.outputs.new_tag }}
+      changelog: ${{ steps.bump_tag.changelog }}
+    steps: 
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+        
+      - run: echo Triggered by ${{ github.event_name }} event  
+        
+      - id: bump_tag
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Create Release
+          release_branches: main
+          
+      - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
-          token: ${{ secrets.YOUR_GITHUB_TOKEN }}
-          body: ${{ steps.tag.outputs.changelog }}
+          tag: ${{ steps.bump_tag.outputs.new_tag }}
+          name: Release ${{ steps.bump_tag.outputs.new_tag }}
+          body: ${{ steps.bump_tag.outputs.changelog }}
