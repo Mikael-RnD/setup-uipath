@@ -7,13 +7,26 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 //const path = require('path');
 const core = __nccwpck_require__(2186);
 const tc = __nccwpck_require__(7784);
-const path = __nccwpck_require__(1017)
+const path = __nccwpck_require__(1017);
+const os = __nccwpck_require__(2037);
 
-function getDownloadURL(version)
+function getDownloadURL(version,tool)
 {
-  const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/UiPath.CLI/versions/'+version+'/content');
+  const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/'+tool+'/versions/'+version+'/content');
   console.log("Download URL: " + downloadURL);
   return downloadURL;
+}
+
+function getTool(){
+  var operatingSystem = os.type();
+  console.log("Operating system: " + operatingSystem);
+  if(operatingSystem.toLowerCase().includes("windows")){
+    console.log("Retrieving Windows cli tool")
+    return "UiPath.CLI.Windows";
+  }
+  else {
+    return "UiPath.CLI";
+  }
 }
 
 function getCliPath(version,extractPath){
@@ -21,15 +34,9 @@ function getCliPath(version,extractPath){
   const versionParts = version.split('.');
   console.log(versionParts[0]);
   var fullPathToCli;
-  if(parseInt(versionParts[0]) > 21){
-    fullPathToCli = path.combine(extractPath,'tools');
-    console.log('uipcli path: ' + fullPathToCli);
-    return fullPathToCli;
-  } else {
-    fullPathToCli = path.combine(extractPath,'lib','net461');
-    console.log('uipcli path: ' + fullPathToCli);
-    return fullPathToCli;
-  }
+  fullPathToCli = path.combine(extractPath,'tools');
+  console.log('uipcli path: ' + fullPathToCli);
+  return fullPathToCli;
 }
 
 async function setup() {
@@ -39,8 +46,11 @@ async function setup() {
     const version = core.getInput('version');
     console.log(version);
 
+    // Get CLI for the correct operating system
+    const tool = getTool();
+
     // Download the specific version of the tool
-    const downloadPath = await tc.downloadTool(getDownloadURL(version));
+    const downloadPath = await tc.downloadTool(getDownloadURL(version,tool));
     const filename = path.basename(downloadPath);
     console.log('Filename: ' + filename);
 
