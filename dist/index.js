@@ -29,11 +29,9 @@ function getTool(){
   }
 }
 
-function getCliPath(version,extractPath){
-  console.log('Version ' + version);
-  const versionParts = version.split('.');
-  console.log(versionParts[0]);
+function getCliPath(extractPath){
   var fullPathToCli;
+  console.log('extractPath: ' + extractPath);
   fullPathToCli = path.combine(extractPath,'tools');
   console.log('uipcli path: ' + fullPathToCli);
   return fullPathToCli;
@@ -58,7 +56,7 @@ async function setup() {
     const extractPath = await tc.extractZip(downloadPath);
     console.log('Tool extracted to ' + extractPath);
 
-    const pathToCLI = getCliPath(version,extractPath); 
+    const pathToCLI = getCliPath(extractPath); 
     console.log('Adding ' + pathToCLI + ' to PATH');
     // Expose the tool by adding it to the PATH
     core.addPath(pathToCLI);
