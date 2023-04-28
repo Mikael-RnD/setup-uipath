@@ -1,0 +1,20 @@
+name: Tag and Release
+
+on:
+  push: 
+    branches: main
+
+jobs:
+  tag_and_release:
+    runs-on: ubuntu-latest
+    steps:
+      - id: tag
+        uses: hennejg/github-tag-action@v4.3.1
+        with: 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.YOUR_GITHUB_TOKEN }}
+          body: ${{ steps.tag.outputs.changelog }}
