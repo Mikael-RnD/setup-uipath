@@ -56,6 +56,7 @@ async function setup() {
 
     var operatingSystem = os.type();
     console.log("Operating system: " + operatingSystem);
+    var extractPath;
     if(operatingSystem.toLowerCase().includes("windows")){
       extractPath = await tc.extractZip(downloadPath);
     }
