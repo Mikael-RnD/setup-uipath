@@ -16,20 +16,20 @@ jobs:
   
   windows-setup:
     # The type of runner that the job will run on
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      - name: uipath-setup
+      - name: setup-uipath
         uses: ./
       - run: uipcli package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
   
-  #ubuntu-setup:
+  ubuntu-setup:
     # The type of runner that the job will run on
-  #  runs-on: ubuntu-latest
-  #  steps:
+    runs-on: ubuntu-latest
+    steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-  #    - uses: actions/checkout@v3
-  #    - name: UiPath-Setup-JS
-  #      uses: ./
-  #    - run: uipcli package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
+      - uses: actions/checkout@v3
+      - name: setup-uipath
+        uses: ./
+      - run: uipcli package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
