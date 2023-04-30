@@ -53,7 +53,15 @@ async function setup() {
     console.log('Filename: ' + filename);
 
     console.log('Download Path: ' + downloadPath);
-    const extractPath = await tc.extractZip(downloadPath);
+
+    var operatingSystem = os.type();
+    console.log("Operating system: " + operatingSystem);
+    if(operatingSystem.toLowerCase().includes("windows")){
+      extractPath = tc.extractZip(downloadPath);
+    }
+    else {
+      extractPath = tc.extractTar(downloadPath);
+    }
     console.log('Tool extracted to ' + extractPath);
 
     const pathToCLI = getCliPath(extractPath); 
