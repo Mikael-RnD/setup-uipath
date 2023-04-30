@@ -51,10 +51,10 @@ async function setup() {
     var operatingSystem = os.type();
     console.log("Operating system: " + operatingSystem);
     if(operatingSystem.toLowerCase().includes("windows")){
-      extractPath = tc.extractZip(downloadPath);
+      extractPath = await tc.extractZip(downloadPath);
     }
     else {
-      extractPath = tc.extractTar(downloadPath);
+      extractPath = await tc.extractTar(downloadPath);
     }
     console.log('Tool extracted to ' + extractPath);
 
