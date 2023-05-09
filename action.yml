@@ -5,10 +5,6 @@ inputs:
     description: 'Version of UiPath CLI to download'
     required: true
     default: '23.2.8467.25277'
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
-    required: true
-    default: '10000'
 runs:
   using: 'node16'
   main: 'dist/index.js'
