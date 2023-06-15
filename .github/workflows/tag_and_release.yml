@@ -40,7 +40,7 @@ jobs:
           script: |-
             const sha = process.env.GITHUB_SHA;
             const new_tag = '${{ steps.bump_tag.outputs.new_tag }}';
-            const floating_tag = new_tag.split(".")[0];
+            const major = new_tag.split(".")[0];
 
             // If exists then update, else create
             try {
@@ -57,7 +57,7 @@ jobs:
               await github.rest.git.createRef({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                ref: `refs/tags/${new_floating_tag}`,
+                ref: `refs/tags/${major}`,
                 sha: sha,
               });
               core.info(`Created ${major} at ${sha}`);
