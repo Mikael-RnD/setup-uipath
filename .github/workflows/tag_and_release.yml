@@ -32,3 +32,33 @@ jobs:
           tag: ${{ steps.bump_tag.outputs.new_tag }}
           name: Release ${{ steps.bump_tag.outputs.new_tag }}
           body: ${{ steps.bump_tag.outputs.changelog }}
+
+      - name: Create floating tag
+        uses: 'actions/github-script@v6'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |-
+            const sha = process.env.GITHUB_SHA;
+            const new_tag = '${{ steps.bump_tag.outputs.new_tag }}';
+            const major = new_tag.split(".")[0];
+
+            // If exists then update, else create
+            try {
+              await github.rest.git.updateRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `tags/${major}`,
+                sha: sha,
+                force: true,
+              });
+              core.info(`Updated ${major} to ${sha}`);
+            } catch(err) {
+              core.info(`Failed to update ${major}: ${err}`);
+              await github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/tags/${major}`,
+                sha: sha,
+              });
+              core.info(`Created ${major} at ${sha}`);
+            }
