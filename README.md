@@ -8,7 +8,7 @@ Example usage:
 
       # Set up the UiPath CLI (uipcli) and add it to PATH on your runner
       - name: Setup UiPath (uipcli) command line tool
-        uses: Mikael-RnD/setup-uipath@main
+        uses: Mikael-RnD/setup-uipath@v1
 
 In further steps of your workflow, you can now use the UiPath CLI (uipcli):
 - Packing Studio projects into NuGet packages.
