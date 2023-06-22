@@ -42,4 +42,4 @@ jobs:
         with:
           fetch-depth: 0
       - name: Commitsar Action
-        uses: aevea/commitsar@v0.20.1
+        uses: aevea/commitsar@v0.20.2
