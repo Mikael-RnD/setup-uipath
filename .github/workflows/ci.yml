@@ -9,7 +9,7 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - run: npm ci
     - run: npm test
 
@@ -19,7 +19,7 @@ jobs:
     runs-on: windows-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: uipath-setup
         uses: ./
       - run: uipcli package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: uipath-setup
         uses: ./
       - run: uipcli package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
@@ -38,7 +38,7 @@ jobs:
   commitsar:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Commitsar Action
