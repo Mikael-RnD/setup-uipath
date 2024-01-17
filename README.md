@@ -17,3 +17,8 @@ In further steps of your workflow, you can now use the UiPath CLI (uipcli):
 - Running Test Sets in Orchestrator.
 
 [See the UiPath documentation for reference on tasks that can be performed with the command line tool](https://docs.uipath.com/test-suite/automation-suite/2022.10/user-guide/executing-tasks-cli)
+
+## Inputs
+|Name|Description|Required|Example value|
+|:--|:--|:--|:--|
+|version|Version of the UiPath CLI to retrieve from the [UiPath Official feed](https://uipath.visualstudio.com/Public.Feeds/_artifacts/feed/UiPath-Official/NuGet/UiPath.CLI.Windows/versions/23.10.8753.32995). If not provided, the default version set in action.yml is used|False|23.10.8753.32995|
