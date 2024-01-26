@@ -31,6 +31,22 @@ function getCliPath(extractPath){
   return fullPathToCli;
 }
 
+async function unpackTool(tool, downloadPath) {
+  var extractPath;
+  console.log('Download Path: ' + downloadPath);
+  if(tool == "UiPath.CLI.Windows") {
+    extractPath = await tc.extractZip(downloadPath);
+  }
+  else if(tool == "UiPath.CLI") {
+    extractPath = await tc.extractTar(downloadPath);
+  }
+  else {
+    throw new Error("Invalid version of the UiPath CLI tool");
+  }
+  console.log('Tool extracted to ' + extractPath);
+  return extractPath;
+}
+
 async function setup() {
   try {
     
@@ -42,14 +58,12 @@ async function setup() {
     const tool = getTool();
 
     // Download the specific version of the tool
-    const downloadPath = await tc.downloadTool(getDownloadURL(version,tool));
+    const downloadPath = await tc.downloadTool(getDownloadURL(version, tool));
     const filename = path.basename(downloadPath);
     console.log('Filename: ' + filename);
 
-    console.log('Download Path: ' + downloadPath);
-    const extractPath = await tc.extractZip(downloadPath);
-    console.log('Tool extracted to ' + extractPath);
-
+    extractPath = await unpackTool(tool, downloadPath);
+    
     const pathToCLI = getCliPath(extractPath); 
     console.log('Adding ' + pathToCLI + ' to PATH');
     // Expose the tool by adding it to the PATH
