@@ -4,7 +4,7 @@ inputs:
   version:
     description: 'Version of UiPath CLI to download'
     required: true
-    default: '24.10.9050.17872'
+    default: '24.12.9111.31003'
 runs:
   using: 'node20'
   main: 'dist/index.js'
