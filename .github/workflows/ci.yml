@@ -10,19 +10,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+
     - run: npm ci
+
     - run: npm test
 
   # test action works running from the graph
-  windows-sample-job:
-    # The type of runner that the job will run on
-    runs-on: windows-latest
+  setup-uipath-job:
+    strategy:
+      matrix:
+        runner: [windows-latest]
+        version: ['', '24.12.9111.31003']
+        platform-version: ['', '24.10', '23.10', '23.4', '22.10']
+    runs-on: ${{ matrix.runner }}
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
+
       - name: uipath-setup
         uses: ./
-      - run: uipcli package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
+        with:
+          version: ${{ matrix.version }}
+          platform-version: ${{ matrix.platform-version }}
+
+      - name: Run CLI Task Analyze
+        run: uipcli package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
 
   commitsar:
     runs-on: ubuntu-latest
@@ -30,5 +42,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Commitsar Action
         uses: aevea/commitsar@v0.20.2

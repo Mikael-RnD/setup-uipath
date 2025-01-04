@@ -2,9 +2,16 @@ name: 'Setup UiPath CLI'
 description: 'Download UiPath CLI and setup on GitHub Actions runner'
 inputs:
   version:
-    description: 'Version of UiPath CLI to download'
-    required: true
-    default: '24.12.9111.31003'
+    description: | 
+      'Specific version of the UiPath CLI to download from the UiPath-Official Feed (https://uipath.visualstudio.com/Public.Feeds/_artifacts/feed/UiPath-Official/NuGet/UiPath.CLI.Windows/versions/). 
+      If not provided, the latest version will be downloaded based on platform-version input.'
+    required: false
+  platform-version:
+    description: |
+      'Version of the UiPath platform used (e.g. version of robots and Studio used) in major and minor version, such as "24.10".
+      If 'version' is provided, this input will be ignored.'
+    required: false
+    default: '24.12'
 runs:
   using: 'node20'
   main: 'dist/index.js'
