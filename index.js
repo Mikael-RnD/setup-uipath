@@ -30,7 +30,7 @@ function getVersion() {
   if (version == '') {
     switch(platformVersion) {
       case '24.12':
-        version = '24.12.9111.31003';
+        version = '24.12.9166.24491';
         break;
       case '24.10':
         version = '24.10.9050.17872';
@@ -45,7 +45,7 @@ function getVersion() {
         version = '22.10.8467.18097';
         break;
       default:
-        version = '24.12.9111.31003';
+        version = '24.12.9166.24491';
         break;
     }
   }
