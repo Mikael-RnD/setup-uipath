@@ -84,6 +84,17 @@ async function setup() {
     // Expose the tool by adding it to the PATH
     core.addPath(pathToCLI);
 
+    // Add alias for Linux (Ubuntu)
+    if (os.type().toLowerCase().includes('linux')) {
+      const aliasScriptPath = path.join(pathToCLI, 'uipcli.sh');
+      const aliasCommand = `#!/bin/bash\nalias uipcli="dotnet ${path.join(pathToCLI, 'uipcli.dll')}"\n`;
+      fs.writeFileSync(aliasScriptPath, aliasCommand, { mode: 0o755 });
+      console.log('Alias script created at ' + aliasScriptPath);
+
+      // Add the alias script directory to PATH
+      core.addPath(aliasScriptPath);
+    }
+
   } catch (error) {
     core.setFailed(error.Message);
   }
