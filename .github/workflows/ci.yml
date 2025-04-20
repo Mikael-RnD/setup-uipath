@@ -54,7 +54,7 @@ jobs:
           platform-version: ${{ matrix.platform-version }}
 
       - name: Run CLI Task Analyze
-        run: dotnet uipcli.dll package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
+        run: uipcli package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
 
   commitsar:
     runs-on: ubuntu-latest
