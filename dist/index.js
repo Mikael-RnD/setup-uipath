@@ -6189,6 +6189,7 @@ const core = __nccwpck_require__(186);
 const tc = __nccwpck_require__(784);
 const path = __nccwpck_require__(17);
 const os = __nccwpck_require__(37);
+const fs = __nccwpck_require__(147);
 
 function getDownloadURL(version,tool)
 {
@@ -6272,15 +6273,18 @@ async function setup() {
 
     // Add alias for Linux (Ubuntu)
     if (os.type().toLowerCase().includes('linux')) {
-      console.log('Creating uipcli alias for Linux');
-      const aliasScriptPath = path.join(pathToCLI, 'uipcli.sh');
-      console.log('Creating alias script at ' + aliasScriptPath);
-      const aliasCommand = `#!/bin/bash\nalias uipcli="dotnet ${path.join(pathToCLI, 'uipcli.dll')}"\n`;
-      fs.writeFileSync(aliasScriptPath, aliasCommand, { mode: 0o755 });
-      console.log('Alias script created at ' + aliasScriptPath);
+      console.log('Creating uipcli symlink for Linux');
+      const symlinkPath = path.join(pathToCLI, 'uipcli');
+      const targetPath = path.join(pathToCLI, 'uipcli.dll');
+      console.log('Creating symlink at ' + symlinkPath + ' pointing to ' + targetPath);
 
-      // Add the alias script directory to PATH
-      core.addPath(aliasScriptPath);
+      // Create a symlink to run "dotnet uipcli.dll" as "uipcli"
+      const symlinkCommand = `#!/bin/bash\ndotnet "${targetPath}" "$@"\n`;
+      fs.writeFileSync(symlinkPath, symlinkCommand, { mode: 0o755 });
+      console.log('Symlink created at ' + symlinkPath);
+
+      // Add the symlink directory to PATH
+      core.addPath(symlinkPath);
     }
 
   } catch (error) {
