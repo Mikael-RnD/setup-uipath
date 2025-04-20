@@ -6189,6 +6189,7 @@ const core = __nccwpck_require__(186);
 const tc = __nccwpck_require__(784);
 const path = __nccwpck_require__(17);
 const os = __nccwpck_require__(37);
+const fs = __nccwpck_require__(147);
 
 function getDownloadURL(version,tool)
 {
@@ -6270,7 +6271,24 @@ async function setup() {
     // Expose the tool by adding it to the PATH
     core.addPath(pathToCLI);
 
+    // Add alias for Linux (Ubuntu)
+    if (os.type().toLowerCase().includes('linux')) {
+      console.log('Creating uipcli symlink for Linux');
+      const symlinkPath = path.join(pathToCLI, 'uipcli');
+      const targetPath = path.join(pathToCLI, 'uipcli.dll');
+      console.log('Creating symlink at ' + symlinkPath + ' pointing to ' + targetPath);
+
+      // Create a symlink to run "dotnet uipcli.dll" as "uipcli"
+      const symlinkCommand = `#!/bin/bash\ndotnet "${targetPath}" "$@"\n`;
+      fs.writeFileSync(symlinkPath, symlinkCommand, { mode: 0o755 });
+      console.log('Symlink created at ' + symlinkPath);
+
+      // Add the symlink directory to PATH
+      core.addPath(symlinkPath);
+    }
+
   } catch (error) {
+    console.error('Error: ' + error);
     core.setFailed(error.Message);
   }
 }

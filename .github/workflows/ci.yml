@@ -36,6 +36,33 @@ jobs:
       - name: Run CLI Task Analyze
         run: uipcli package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
 
+  setup-ubuntu-test:
+    strategy:
+      matrix:
+        runner: [ubuntu-latest]
+        version: ['', '24.12.9111.31003']
+        platform-version: ['', '24.10', '23.10']
+    runs-on: ${{ matrix.runner }}
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: uipath-setup
+        uses: ./
+        with:
+          version: ${{ matrix.version }}
+          platform-version: ${{ matrix.platform-version }}
+
+      - name: setup-dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            6.0.x
+
+      - name: Run CLI Task Analyze
+        run: uipcli package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
+
   commitsar:
     runs-on: ubuntu-latest
     steps:
