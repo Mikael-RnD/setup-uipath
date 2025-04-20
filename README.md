@@ -51,6 +51,33 @@ Copy the snippet below for using the setup-uipath action, with a UiPath CLI vers
           platform-version: '24.10'
 ```
 
+## Using uipcli on Ubuntu
+
+When running this action on Linux runners, the `uipcli` is a reference to symlink for running `dotnet uipcli.dll`.
+This means that dotnet is required to have been setup on the runner. This can be achieved by running [actions/setup-dotnet](https://github.com/actions/setup-dotnet), providing the required dotnet-version (see UiPath CLI [docs](https://docs.uipath.com/automation-ops/automation-cloud/latest/user-guide/about-uipath-cli#prerequisites) for required version) as part of the job before any UiPath CLI commands. Once that has been done, you can run uipcli exactly as you would on a Windows runner.
+
+See code block below for an example job performing this setup.
+
+```yml
+  uipcli-wf-analysis-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: uipath-setup
+        uses: Mikael-RnD/setup-uipath@v2
+
+      - name: setup-dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            6.0.x
+
+      - name: Run CLI Task Analyze
+        run: uipcli package analyze ${{ github.workspace }}/project.json
+```
+
 ## Inputs
 
 See [action.yml](action.yml) for default values on inputs.
