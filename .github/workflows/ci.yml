@@ -53,6 +53,13 @@ jobs:
           version: ${{ matrix.version }}
           platform-version: ${{ matrix.platform-version }}
 
+      - name: setup-dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            6.0.x
+
       - name: Run CLI Task Analyze
         run: uipcli package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
 
