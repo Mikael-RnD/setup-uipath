@@ -30,6 +30,9 @@ function getVersion() {
   var platformVersion = core.getInput('platform-version');
   if (version == '') {
     switch(platformVersion) {
+      case '25.4':
+        version = '25.4.9239.19674';
+        break;
       case '24.12':
         version = '24.12.9166.24491';
         break;
@@ -46,7 +49,7 @@ function getVersion() {
         version = '22.10.8467.18097';
         break;
       default:
-        version = '24.12.9166.24491';
+        version = '25.4.9239.19674';
         break;
     }
   }
