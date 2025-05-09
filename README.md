@@ -1,8 +1,8 @@
 # UiPath CLI Setup Action
 
-A GitHub Action for setting up the [UiPath CLI](https://docs.uipath.com/automation-ops/automation-cloud/latest/user-guide/about-uipath-cli) on GitHub Actions runners.
+A GitHub Action for setting up the [UiPath CLI](https://docs.uipath.com/cicd-integrations/standalone/2024.10/user-guide/about-uipath-cli) on GitHub Actions runners.
 
-**Note on compatibility:** This action is compatible with both Windows and Ubuntu runners. UiPath offers two separate command line tools for the different operating systems, UiPath.CLI and UiPath.CLI.Windows installed on Ubuntu and Windows respectively. These have different capabilities in terms of project compatibility, noted in the [Compatiblity Matrix sections of this documentation page](https://docs.uipath.com/automation-ops/automation-cloud/latest/USER-GUIDE/about-uipath-cli#prerequisites)
+**Note on compatibility:** This action is compatible with both Windows and Ubuntu runners. UiPath offers two separate command line tools for the different operating systems, UiPath.CLI and UiPath.CLI.Windows installed on Ubuntu and Windows respectively. These have different capabilities in terms of project compatibility, noted in the [Compatiblity Matrix sections of this documentation page](https://docs.uipath.com/cicd-integrations/standalone/2024.10/user-guide/compatibility-matrix)
 
 ## How to use
 
@@ -15,7 +15,7 @@ In further steps of your workflow, you can now use the UiPath CLI (uipcli):
 - Running jobs in Orchestrator.
 - Running Test Sets in Orchestrator.
 
-[See the UiPath documentation for reference on tasks that can be performed with the command line tool](https://docs.uipath.com/automation-ops/automation-cloud/latest/user-guide/executing-tasks-cli)
+[See the UiPath documentation for reference on tasks that can be performed with the command line tool](https://docs.uipath.com/cicd-integrations/standalone/2024.10/user-guide/executing-uipath-cli-tasks)
 
 ### Example usage, with default CLI version
 
@@ -54,7 +54,7 @@ Copy the snippet below for using the setup-uipath action, with a UiPath CLI vers
 ## Using uipcli on Ubuntu
 
 When running this action on Linux runners, the `uipcli` is a reference to symlink for running `dotnet uipcli.dll`.
-This means that dotnet is required to have been setup on the runner. This can be achieved by running [actions/setup-dotnet](https://github.com/actions/setup-dotnet), providing the required dotnet-version (see UiPath CLI [docs](https://docs.uipath.com/automation-ops/automation-cloud/latest/user-guide/about-uipath-cli#prerequisites) for required version) as part of the job before any UiPath CLI commands. Once that has been done, you can run uipcli exactly as you would on a Windows runner.
+This means that dotnet is required to have been setup on the runner. This can be achieved by running [actions/setup-dotnet](https://github.com/actions/setup-dotnet), providing the required dotnet-version (see UiPath CLI [docs](https://docs.uipath.com/cicd-integrations/standalone/2024.10/user-guide/about-uipath-cli#prerequisites) for required version) as part of the job before any UiPath CLI commands. Once that has been done, you can run uipcli exactly as you would on a Windows runner.
 
 See code block below for an example job performing this setup.
 
