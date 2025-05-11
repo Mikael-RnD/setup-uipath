@@ -28561,12 +28561,36 @@ module.exports = require("zlib");
 /***/ 4566:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-//const path = require('path');
 const core = __nccwpck_require__(2186);
 const tc = __nccwpck_require__(7784);
 const path = __nccwpck_require__(1017);
 const os = __nccwpck_require__(2037);
 const fs = __nccwpck_require__(7147);
+const { get } = __nccwpck_require__(3685);
+
+async function getLatestVersionFromFeed(tool) {
+  console.log('Fetching latest version from feed for tool: ' + tool);
+  const url = 'https://feeds.dev.azure.com/uipath/Public.Feeds/_apis/packaging/Feeds/UiPath-Official/packages?packageNameQuery=' + tool + '&isLatest=true&includeDescription=true&isRelease=true&isListed=true';
+  const options = { method: 'GET' };
+
+  const response = await fetch(url, options);
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
+  }
+
+  const toolData = data.value.find(item => item.name === tool);
+  if (!toolData || !toolData.versions) {
+    throw new Error(`Tool "${tool}" not found or does not have versions.`);
+  }
+
+  const latestVersion = toolData.versions.find(item => item.isLatest === true);
+  if (!latestVersion) {
+    throw new Error(`No latest version found for tool "${tool}".`);
+  }
+
+  return latestVersion.version;
+}
 
 function getDownloadURL(version,tool)
 {
@@ -28588,7 +28612,7 @@ function getTool(){
   }
 }
 
-function getVersion() {
+async function getVersion(tool) {
   var version = core.getInput('version');
   var platformVersion = core.getInput('platform-version');
   if (version == '') {
@@ -28612,7 +28636,7 @@ function getVersion() {
         version = '22.10.8467.18097';
         break;
       default:
-        version = '25.4.9239.19674';
+        version = await getLatestVersionFromFeed(tool);
         break;
     }
   }
@@ -28630,12 +28654,11 @@ function getCliPath(extractPath){
 
 async function setup() {
   try {
-    
-    // Get version of tool to be installed
-    const version = getVersion();
-
     // Get CLI for the correct operating system
     const tool = getTool();
+
+    // Get version of tool to be installed
+    const version = await getVersion(tool);
 
     // Download the specific version of the tool
     const downloadPath = await tc.downloadTool(getDownloadURL(version,tool));
