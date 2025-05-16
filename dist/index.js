@@ -28656,9 +28656,11 @@ async function setup() {
   try {
     // Get CLI for the correct operating system
     const tool = getTool();
-
+    core.setOutput('cliToolName', tool);
+    
     // Get version of tool to be installed
     const version = await getVersion(tool);
+    core.setOutput('cliVersion', version);
 
     // Download the specific version of the tool
     const downloadPath = await tc.downloadTool(getDownloadURL(version,tool));

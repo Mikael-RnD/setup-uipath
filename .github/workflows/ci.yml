@@ -28,10 +28,16 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: uipath-setup
+        id: uipath-setup
         uses: ./
         with:
           version: ${{ matrix.version }}
           platform-version: ${{ matrix.platform-version }}
+
+      - name: Echo outputs
+        run: |
+          echo "cliToolName: ${{ steps.uipath-setup.outputs.cliToolName }}"
+          echo "cliVersion: ${{ steps.uipath-setup.outputs.cliVersion }}"
 
       - name: Run CLI Task Analyze
         run: uipcli package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
@@ -48,6 +54,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: uipath-setup
+        id: uipath-setup
         uses: ./
         with:
           version: ${{ matrix.version }}
@@ -59,6 +66,11 @@ jobs:
           dotnet-version: |
             8.0.x
             6.0.x
+
+      - name: Echo outputs
+        run: |
+          echo "cliToolName: ${{ steps.uipath-setup.outputs.cliToolName }}"
+          echo "cliVersion: ${{ steps.uipath-setup.outputs.cliVersion }}"
 
       - name: Run CLI Task Analyze
         run: uipcli package analyze ${{ github.workspace }}/SampleUiPathProject/project.json
