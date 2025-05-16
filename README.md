@@ -85,3 +85,10 @@ See [action.yml](action.yml) for default values on inputs.
 |:--|:--|:--|:--|
 |**version**|Specific version of the UiPath CLI to download from the [UiPath-Official Feed](https://uipath.visualstudio.com/Public.Feeds/_artifacts/feed/UiPath-Official/NuGet/UiPath.CLI.Windows/versions/)|False|23.10.8753.32995|
 |**platform-version**|Version of the UiPath platform used (e.g. version of robots and Studio used) in major and minor version, such as "24.10" or "23.10". If **version** is provided, this input will be ignored.|False|25.4|
+
+## Outputs
+
+|Name|Description|
+|:--|:--|
+|**cliToolName**|Name of the UiPath CLI tool that was installed. E.g. UiPath.CLI.Windows for windows, UiPath.CLI otherwise|
+|**cliVersion**|Version of the UiPath CLI tool that was installed. E.g. 24.10.0|
