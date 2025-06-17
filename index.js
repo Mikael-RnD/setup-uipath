@@ -7,7 +7,7 @@ const { get } = require('http');
 
 async function getLatestVersionFromFeed(tool) {
   console.log('Fetching latest version from feed for tool: ' + tool);
-  const url = 'https://feeds.dev.azure.com/uipath/Public.Feeds/_apis/packaging/Feeds/UiPath-Official/packages?packageNameQuery=' + tool + '&isLatest=true&includeDescription=true&isRelease=true&isListed=true';
+  const url = 'https://feeds.dev.azure.com/uipath/Public.Feeds/_apis/packaging/Feeds/UiPath-Internal/packages?packageNameQuery=' + tool + '&isLatest=true&includeDescription=true&isRelease=true&isListed=true';
   const options = { method: 'GET' };
 
   const response = await fetch(url, options);
@@ -31,7 +31,7 @@ async function getLatestVersionFromFeed(tool) {
 
 function getDownloadURL(version,tool)
 {
-  const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/'+tool+'/versions/'+version+'/content');
+  const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Internal/nuget/packages/'+tool+'/versions/'+version+'/content');
   console.log("Download URL: " + downloadURL);
   return downloadURL;
 }
