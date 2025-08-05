@@ -55,7 +55,7 @@ async function getVersion(tool) {
   if (version == '') {
     switch(platformVersion) {
       case '25.4':
-        version = '25.4.9301.33152';
+        version = '25.4.9337.28376';
         break;
       case '24.12':
         version = '24.12.9166.24491';
