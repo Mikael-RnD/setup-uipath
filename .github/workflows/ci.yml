@@ -35,7 +35,7 @@ jobs:
           platform-version: ${{ matrix.platform-version }}
 
       - name: setup-dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: |
             8.0.x
@@ -68,7 +68,7 @@ jobs:
           platform-version: ${{ matrix.platform-version }}
 
       - name: setup-dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: |
             8.0.x
