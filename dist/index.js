@@ -28601,10 +28601,16 @@ function getDownloadURL(version,tool)
 
 function getTool(){
   var operatingSystem = os.type();
+  var version = core.getInput('version');
+  var platformVersion = core.getInput('platform-version');
   console.log("Operating system: " + operatingSystem);
   if(operatingSystem.toLowerCase().includes("windows")){
     console.log("Retrieving UiPath.CLI.Windows");
     return "UiPath.CLI.Windows";
+  }
+  if((!version || version.startsWith("25")) && (platformVersion === '25.10' || !platformVersion)) {
+    console.log("Retrieving UiPath.CLI.Linux");
+    return "UiPath.CLI.Linux";
   }
   else {
     console.log("Retrieving UiPath.CLI");
@@ -28617,6 +28623,9 @@ async function getVersion(tool) {
   var platformVersion = core.getInput('platform-version');
   if (version == '') {
     switch(platformVersion) {
+      case '25.10':
+        version = '25.10.5';
+        break;
       case '25.4':
         version = '25.4.9414.17608';
         break;
@@ -28645,11 +28654,32 @@ async function getVersion(tool) {
 }
 
 function getCliPath(extractPath){
-  var fullPathToCli;
   console.log('extractPath: ' + extractPath);
-  fullPathToCli = path.join(extractPath,'tools');
-  console.log('uipcli path: ' + fullPathToCli);
-  return fullPathToCli;
+  
+  const dirsToSearch = [extractPath];
+  
+  while (dirsToSearch.length > 0) {
+    const currentDir = dirsToSearch.shift();
+    
+    try {
+      const entries = fs.readdirSync(currentDir, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        if (entry.isFile() && (entry.name === 'uipcli.dll' || entry.name === 'uipcli.exe')) {
+          console.log('uipcli path: ' + currentDir);
+          return currentDir;
+        }
+        
+        if (entry.isDirectory()) {
+          dirsToSearch.push(path.join(currentDir, entry.name));
+        }
+      }
+    } catch (error) {
+      console.error('Error reading directory ' + currentDir + ': ' + error.message);
+    }
+  }
+  
+  throw new Error('Could not find uipcli.dll or uipcli.exe in extracted package');
 }
 
 async function setup() {
@@ -28672,10 +28702,25 @@ async function setup() {
     console.log('Tool extracted to ' + extractPath);
 
     const pathToCLI = getCliPath(extractPath); 
+    
     console.log('Adding ' + pathToCLI + ' to PATH');
     // Expose the tool by adding it to the PATH
     core.addPath(pathToCLI);
 
+    // Check if we have a .dll file (needs wrapper) or .exe file (standalone)
+    const dllPath = path.join(pathToCLI, 'uipcli.dll');
+    const exePath = path.join(pathToCLI, 'uipcli.exe');
+
+    if (fs.existsSync(dllPath) && !fs.existsSync(exePath) && os.type().toLowerCase().includes('windows')) {
+      if (os.type().toLowerCase().includes('windows')) {
+        console.log('Creating uipcli.cmd wrapper for Windows');
+        const wrapperPath = path.join(pathToCLI, 'uipcli.cmd');
+        const wrapperContent = `@echo off\r\ndotnet "%~dp0uipcli.dll" %*\r\n`;
+        fs.writeFileSync(wrapperPath, wrapperContent);
+        console.log('Wrapper created at ' + wrapperPath);
+        core.addPath(wrapperPath);
+      }
+    }
     // Add alias for Linux (Ubuntu)
     if (os.type().toLowerCase().includes('linux')) {
       console.log('Creating uipcli symlink for Linux');
@@ -28691,7 +28736,6 @@ async function setup() {
       // Add the symlink directory to PATH
       core.addPath(symlinkPath);
     }
-
   } catch (error) {
     console.error('Error: ' + error);
     core.setFailed(error.Message);
