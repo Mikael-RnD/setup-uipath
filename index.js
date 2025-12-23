@@ -82,11 +82,32 @@ async function getVersion(tool) {
 }
 
 function getCliPath(extractPath){
-  var fullPathToCli;
   console.log('extractPath: ' + extractPath);
-  fullPathToCli = path.join(extractPath,'tools');
-  console.log('uipcli path: ' + fullPathToCli);
-  return fullPathToCli;
+  
+  const dirsToSearch = [extractPath];
+  
+  while (dirsToSearch.length > 0) {
+    const currentDir = dirsToSearch.shift();
+    
+    try {
+      const entries = fs.readdirSync(currentDir, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        if (entry.isFile() && (entry.name === 'uipcli.dll' || entry.name === 'uipcli.exe')) {
+          console.log('uipcli path: ' + currentDir);
+          return currentDir;
+        }
+        
+        if (entry.isDirectory()) {
+          dirsToSearch.push(path.join(currentDir, entry.name));
+        }
+      }
+    } catch (error) {
+      console.error('Error reading directory ' + currentDir + ': ' + error.message);
+    }
+  }
+  
+  throw new Error('Could not find uipcli.dll or uipcli.exe in extracted package');
 }
 
 async function setup() {
