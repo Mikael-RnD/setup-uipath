@@ -28702,30 +28702,25 @@ async function setup() {
     console.log('Tool extracted to ' + extractPath);
 
     const pathToCLI = getCliPath(extractPath); 
-    
-    // Check if we have a .dll file (needs wrapper) or .exe file (standalone)
-    const dllPath = path.join(pathToCLI, 'uipcli.dll');
-    const exePath = path.join(pathToCLI, 'uipcli.exe');
-    
-    if (fs.existsSync(dllPath) && !fs.existsSync(exePath)) {
-      if (os.type().toLowerCase().includes('windows')) {
-        console.log('Creating uipcli.cmd wrapper for Windows');
-        const wrapperPath = path.join(pathToCLI, 'uipcli.cmd');
-        const wrapperContent = `@echo off\r\ndotnet "%~dp0uipcli.dll" %*\r\n`;
-        fs.writeFileSync(wrapperPath, wrapperContent);
-        console.log('Wrapper created at ' + wrapperPath);
-      } else {
-        console.log('Creating uipcli symlink for Linux');
-        const symlinkPath = path.join(pathToCLI, 'uipcli');
-        const symlinkCommand = `#!/bin/bash\ndotnet "${dllPath}" "$@"\n`;
-        fs.writeFileSync(symlinkPath, symlinkCommand, { mode: 0o755 });
-        console.log('Symlink created at ' + symlinkPath);
-      }
-    }
-    
     console.log('Adding ' + pathToCLI + ' to PATH');
     // Expose the tool by adding it to the PATH
     core.addPath(pathToCLI);
+
+    // Add alias for Linux (Ubuntu)
+    if (os.type().toLowerCase().includes('linux')) {
+      console.log('Creating uipcli symlink for Linux');
+      const symlinkPath = path.join(pathToCLI, 'uipcli');
+      const targetPath = path.join(pathToCLI, 'uipcli.dll');
+      console.log('Creating symlink at ' + symlinkPath + ' pointing to ' + targetPath);
+
+      // Create a symlink to run "dotnet uipcli.dll" as "uipcli"
+      const symlinkCommand = `#!/bin/bash\ndotnet "${targetPath}" "$@"\n`;
+      fs.writeFileSync(symlinkPath, symlinkCommand, { mode: 0o755 });
+      console.log('Symlink created at ' + symlinkPath);
+
+      // Add the symlink directory to PATH
+      core.addPath(symlinkPath);
+    }
 
   } catch (error) {
     console.error('Error: ' + error);
