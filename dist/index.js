@@ -28601,10 +28601,16 @@ function getDownloadURL(version,tool)
 
 function getTool(){
   var operatingSystem = os.type();
+  var version = core.getInput('version');
+  var platformVersion = core.getInput('platform-version');
   console.log("Operating system: " + operatingSystem);
   if(operatingSystem.toLowerCase().includes("windows")){
     console.log("Retrieving UiPath.CLI.Windows");
     return "UiPath.CLI.Windows";
+  }
+  if((!version || version.startsWith("25")) && (platformVersion === '25.10' || !platformVersion)) {
+    console.log("Retrieving UiPath.CLI.Linux");
+    return "UiPath.CLI.Linux";
   }
   else {
     console.log("Retrieving UiPath.CLI");
