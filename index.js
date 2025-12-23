@@ -54,6 +54,9 @@ async function getVersion(tool) {
   var platformVersion = core.getInput('platform-version');
   if (version == '') {
     switch(platformVersion) {
+      case '25.10':
+        version = '25.10.5';
+        break;
       case '25.4':
         version = '25.4.9414.17608';
         break;
