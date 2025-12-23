@@ -28702,10 +28702,25 @@ async function setup() {
     console.log('Tool extracted to ' + extractPath);
 
     const pathToCLI = getCliPath(extractPath); 
+    
     console.log('Adding ' + pathToCLI + ' to PATH');
     // Expose the tool by adding it to the PATH
     core.addPath(pathToCLI);
 
+    // Check if we have a .dll file (needs wrapper) or .exe file (standalone)
+    const dllPath = path.join(pathToCLI, 'uipcli.dll');
+    const exePath = path.join(pathToCLI, 'uipcli.exe');
+
+    if (fs.existsSync(dllPath) && !fs.existsSync(exePath) && os.type().toLowerCase().includes('windows')) {
+      if (os.type().toLowerCase().includes('windows')) {
+        console.log('Creating uipcli.cmd wrapper for Windows');
+        const wrapperPath = path.join(pathToCLI, 'uipcli.cmd');
+        const wrapperContent = `@echo off\r\ndotnet "%~dp0uipcli.dll" %*\r\n`;
+        fs.writeFileSync(wrapperPath, wrapperContent);
+        console.log('Wrapper created at ' + wrapperPath);
+        core.addPath(wrapperPath);
+      }
+    }
     // Add alias for Linux (Ubuntu)
     if (os.type().toLowerCase().includes('linux')) {
       console.log('Creating uipcli symlink for Linux');
@@ -28721,7 +28736,6 @@ async function setup() {
       // Add the symlink directory to PATH
       core.addPath(symlinkPath);
     }
-
   } catch (error) {
     console.error('Error: ' + error);
     core.setFailed(error.Message);
