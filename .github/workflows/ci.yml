@@ -22,7 +22,7 @@ jobs:
 
       - run: dotnet nuget add source https://pkgs.dev.azure.com/uipath/Public.Feeds/_packaging/UiPath-Official/nuget/v3/index.json --name UiPath-Official
 
-      - run: dotnet tool install --global UiPath.CLI.Windows
+      - run: dotnet tool install --global UiPath.CLI.Windows --version 25.10.3
 
       - run: uipcli --version
 
