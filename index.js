@@ -1,181 +1,94 @@
 const core = require('@actions/core');
-const tc = require('@actions/tool-cache');
+const exec = require('@actions/exec');
 const path = require('path');
 const os = require('os');
-const fs = require('fs');
-const { get } = require('http');
-
-async function getLatestVersionFromFeed(tool) {
-  console.log('Fetching latest version from feed for tool: ' + tool);
-  const url = 'https://feeds.dev.azure.com/uipath/Public.Feeds/_apis/packaging/Feeds/UiPath-Official/packages?packageNameQuery=' + tool + '&isLatest=true&includeDescription=true&isRelease=true&isListed=true';
-  const options = { method: 'GET' };
-
-  const response = await fetch(url, options);
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
-  }
-
-  const toolData = data.value.find(item => item.name === tool);
-  if (!toolData || !toolData.versions) {
-    throw new Error(`Tool "${tool}" not found or does not have versions.`);
-  }
-
-  const latestVersion = toolData.versions.find(item => item.isLatest === true);
-  if (!latestVersion) {
-    throw new Error(`No latest version found for tool "${tool}".`);
-  }
-
-  return latestVersion.version;
-}
-
-function getDownloadURL(version,tool)
-{
-  const downloadURL = encodeURI('https://pkgs.dev.azure.com/uipath/Public.Feeds/_apis/packaging/feeds/UiPath-Official/nuget/packages/'+tool+'/versions/'+version+'/content');
-  console.log("Download URL: " + downloadURL);
-  return downloadURL;
-}
 
 function getTool(){
-  var operatingSystem = os.type();
-  var version = core.getInput('version');
-  var platformVersion = core.getInput('platform-version');
+  const operatingSystem = os.type().toLowerCase();
   console.log("Operating system: " + operatingSystem);
-  if(operatingSystem.toLowerCase().includes("windows")){
-    console.log("Retrieving UiPath.CLI.Windows");
+  
+  if(operatingSystem.includes("windows")){
+    console.log("Installing UiPath.CLI.Windows");
     return "UiPath.CLI.Windows";
   }
-  if((!version || version.startsWith("25")) && (platformVersion === '25.10' || !platformVersion)) {
-    console.log("Retrieving UiPath.CLI.Linux");
+  if(operatingSystem.includes("linux")) {
+    console.log("Installing UiPath.CLI.Linux");
     return "UiPath.CLI.Linux";
   }
-  else {
-    console.log("Retrieving UiPath.CLI");
-    return "UiPath.CLI";
+  if(operatingSystem.includes("darwin")) {
+    console.log("Installing UiPath.CLI.macOS");
+    return "UiPath.CLI.macOS";
   }
+  throw new Error(`Unsupported operating system: ${operatingSystem}`);
 }
 
-async function getVersion(tool) {
-  var version = core.getInput('version');
-  var platformVersion = core.getInput('platform-version');
-  if (version == '') {
-    switch(platformVersion) {
-      case '25.10':
-        version = '25.10.5';
-        break;
-      case '25.4':
-        version = '25.4.9414.17608';
-        break;
-      case '24.12':
-        version = '24.12.9166.24491';
-        break;
-      case '24.10':
-        version = '24.10.9050.17872';
-        break;
-      case '23.10':
-        version = '23.10.9076.19285';
-        break;
-      case '23.4':
-        version = '23.4.8951.9936';
-        break;
-      case '22.10':
-        version = '22.10.8467.18097';
-        break;
-      default:
-        version = await getLatestVersionFromFeed(tool);
-        break;
-    }
+function getVersion() {
+  const version = core.getInput('version');
+  const platformVersion = core.getInput('platform-version');
+  
+  if (version) {
+    console.log('Using specified CLI Version: ' + version);
+    return version;
   }
-  console.log('Using CLI Version: ' + version);
-  return version;  
+  
+  // Map platform-version to specific CLI versions
+  const versionMap = {
+    '25.10': '25.10.5',
+    '25.4': '25.4.9414.17608',
+    '24.12': '24.12.9166.24491',
+    '24.10': '24.10.9050.17872',
+    '23.10': '23.10.9076.19285',
+    '23.4': '23.4.8951.9936',
+    '22.10': '22.10.8467.18097'
+  };
+  
+  if (platformVersion && versionMap[platformVersion]) {
+    console.log(`Using CLI Version for platform ${platformVersion}: ${versionMap[platformVersion]}`);
+    return versionMap[platformVersion];
+  }
+  
+  console.log('Using latest CLI version');
+  return null; // Will install latest
 }
 
-function getCliPath(extractPath){
-  console.log('extractPath: ' + extractPath);
-  
-  const dirsToSearch = [extractPath];
-  
-  while (dirsToSearch.length > 0) {
-    const currentDir = dirsToSearch.shift();
+async function installUiPathCLI(toolPackage, version) {
+  try {
+    console.log(`Installing ${toolPackage}${version ? ` version ${version}` : ' (latest)'}...`);
     
-    try {
-      const entries = fs.readdirSync(currentDir, { withFileTypes: true });
-      
-      for (const entry of entries) {
-        if (entry.isFile() && (entry.name === 'uipcli.dll' || entry.name === 'uipcli.exe')) {
-          console.log('uipcli path: ' + currentDir);
-          return currentDir;
-        }
-        
-        if (entry.isDirectory()) {
-          dirsToSearch.push(path.join(currentDir, entry.name));
-        }
-      }
-    } catch (error) {
-      console.error('Error reading directory ' + currentDir + ': ' + error.message);
+    const args = ['tool', 'install', '--global', toolPackage];
+    
+    if (version) {
+      args.push('--version', version);
     }
+    
+    await exec.exec('dotnet', args);
+    console.log(`${toolPackage} installed successfully`);
+  } catch (error) {
+    console.error(`Failed to install UiPath CLI: ${error.message}`);
+    throw error;
   }
-  
-  throw new Error('Could not find uipcli.dll or uipcli.exe in extracted package');
 }
 
 async function setup() {
   try {
-    // Get CLI for the correct operating system
     const tool = getTool();
+    const version = getVersion();
+    
     core.setOutput('cliToolName', tool);
+    core.setOutput('cliVersion', version || 'latest');
     
-    // Get version of tool to be installed
-    const version = await getVersion(tool);
-    core.setOutput('cliVersion', version);
-
-    // Download the specific version of the tool
-    const downloadPath = await tc.downloadTool(getDownloadURL(version,tool));
-    const filename = path.basename(downloadPath);
-    console.log('Filename: ' + filename);
-
-    console.log('Download Path: ' + downloadPath);
-    const extractPath = await tc.extractZip(downloadPath);
-    console.log('Tool extracted to ' + extractPath);
-
-    const pathToCLI = getCliPath(extractPath); 
+    await installUiPathCLI(tool, version);
     
-    console.log('Adding ' + pathToCLI + ' to PATH');
-    // Expose the tool by adding it to the PATH
-    core.addPath(pathToCLI);
-
-    // Check if we have a .dll file (needs wrapper) or .exe file (standalone)
-    const dllPath = path.join(pathToCLI, 'uipcli.dll');
-    const exePath = path.join(pathToCLI, 'uipcli.exe');
-
-    if (fs.existsSync(dllPath) && !fs.existsSync(exePath) && os.type().toLowerCase().includes('windows')) {
-      if (os.type().toLowerCase().includes('windows')) {
-        console.log('Creating uipcli.cmd wrapper for Windows');
-        const wrapperPath = path.join(pathToCLI, 'uipcli.cmd');
-        const wrapperContent = `@echo off\r\ndotnet "%~dp0uipcli.dll" %*\r\n`;
-        fs.writeFileSync(wrapperPath, wrapperContent);
-        console.log('Wrapper created at ' + wrapperPath);
-        core.addPath(wrapperPath);
-      }
-    }
-    // Add alias for Linux (Ubuntu)
-    if (os.type().toLowerCase().includes('linux')) {
-      console.log('Creating uipcli symlink for Linux');
-      const symlinkPath = path.join(pathToCLI, 'uipcli');
-      const targetPath = path.join(pathToCLI, 'uipcli.dll');
-      console.log('Creating symlink at ' + symlinkPath + ' pointing to ' + targetPath);
-
-      // Create a symlink to run "dotnet uipcli.dll" as "uipcli"
-      const symlinkCommand = `#!/bin/bash\ndotnet "${targetPath}" "$@"\n`;
-      fs.writeFileSync(symlinkPath, symlinkCommand, { mode: 0o755 });
-      console.log('Symlink created at ' + symlinkPath);
-
-      // Add the symlink directory to PATH
-      core.addPath(symlinkPath);
-    }
+    // Add .NET tools to PATH
+    const homeDir = os.homedir();
+    const dotnetToolsPath = path.join(homeDir, '.dotnet', 'tools');
+    console.log('Adding .NET tools directory to PATH: ' + dotnetToolsPath);
+    core.addPath(dotnetToolsPath);
+    
+    console.log('UiPath CLI setup complete - uipcli command is now available');
   } catch (error) {
     console.error('Error: ' + error);
-    core.setFailed(error.Message);
+    core.setFailed(error.message);
   }
 }
 
